@@ -15,7 +15,6 @@ use Manticoresearch\Buddy\Core\Task\Column;
 use Manticoresearch\Buddy\Core\Task\Task;
 use Manticoresearch\Buddy\Core\Task\TaskResult;
 use RuntimeException;
-use parallel\Runtime;
 
 final class Handler extends BaseHandler {
 	/**
@@ -33,7 +32,7 @@ final class Handler extends BaseHandler {
 	 * @return Task
 	 * @throws RuntimeException
 	 */
-	public function run(Runtime $runtime): Task {
+	public function run(): Task {
 		$taskFn = static function (): TaskResult {
 			$hostname = gethostname();
 			return TaskResult::withRow(
@@ -43,8 +42,8 @@ final class Handler extends BaseHandler {
 			)->column('hostname', Column::String);
 		};
 
-		return Task::createInRuntime(
-			$runtime, $taskFn, []
+		return Task::create(
+			$taskFn, []
 		)->run();
 	}
 
